@@ -18,7 +18,7 @@ app.use(cors());
 // Enable pre-flight
 app.options("*", cors());
 
-const port = Number(process.env.PORT || 3331);
+const port = Number(process.env.PORT || 3332);
 
 app.use(`/api/v1/users`, userRouter);
 app.use(`/api/v1/durations`, durationRouter);
