@@ -37,6 +37,7 @@ cd src/db
 
 # Import mysql database using Command line
 mysql -u [db_username] -p[db_password] < create-user-db.sql
+mysql -u root -p password < create-db.sql
 # you can edit the file if you want to change the db_name
 # if you are using a different db_name and it elready exists,
 # you can comment the first two lines, remain the line => USE test_db;
