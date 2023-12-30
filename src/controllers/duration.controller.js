@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 /******************************************************************************
- *                              User Controller
+ *                              Duration Controller
  ******************************************************************************/
 class DurationController {
     getAllDurations = async (req, res, next) => {
