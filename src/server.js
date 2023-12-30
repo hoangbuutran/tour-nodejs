@@ -23,11 +23,16 @@ const port = Number(process.env.PORT || 3331);
 app.use(`/api/v1/users`, userRouter);
 app.use(`/api/v1/durations`, durationRouter);
 
+app.get('/', (req, res, next) => {
+    res.send('hiiiiiiiii')
+});
+
 // 404 error
 app.all('*', (req, res, next) => {
     const err = new HttpException(404, 'Endpoint Not Found');
     next(err);
 });
+
 
 // Error middleware
 app.use(errorMiddleware);
