@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS user (
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    role ENUM('Admin', 'SuperUser') DEFAULT 'SuperUser',
+    role ENUM('Admin', 'SuperUser', 'User') DEFAULT 'SuperUser',
     age INT(11) DEFAULT 0
 );
 
@@ -57,7 +57,8 @@ CREATE TABLE IF NOT EXISTS destination (
 
 CREATE TABLE IF NOT EXISTS tour (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    thumnail_url VARCHAR(150) NOT NULL,
+    title VARCHAR(250) NOT NULL,
+    thumnail_url VARCHAR(250) NOT NULL,
     short_detail_text MEDIUMTEXT NULL,
     price DECIMAL(20 , 10 ) NOT NULL,
     sale_price DECIMAL(20 , 10 ) NOT NULL,
