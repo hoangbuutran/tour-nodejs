@@ -17,11 +17,10 @@ class TourDestinationModel {
         return result[0];
     }
 
-    create = async ({ tour_id, detail_text, tour_guide_text }) => {
-        const sql = `INSERT INTO ${this.tableName}
-        (tour_id, destination_id) VALUES (?,?)`;
+    create = async ({ tour_id, destination_id }) => {
+        const sql = `INSERT INTO ${this.tableName} (tour_id, destination_id) VALUES (?,?)`;
 
-        const result = await query(sql, [tour_id, detail_text, tour_guide_text]);
+        const result = await query(sql, [tour_id, destination_id]);
         const affectedRows = result ? result.affectedRows : 0;
 
         return affectedRows;

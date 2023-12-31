@@ -1,9 +1,27 @@
 
 const query = require('../db/db-connection');
-const { multipleColumnSet } = require('../utils/common.utils');
+const { multipleColumnSet, getOffset } = require('../utils/common.utils');
 
-class TourDestinationModel {
+class DestinationModel {
     tableName = 'destination';
+
+    find = async (page = 1, limit = 10) => {
+        let offset = getOffset(page, limit);
+        let sqlData = `SELECT * FROM ${this.tableName} WHERE is_show = 1`;
+
+        sqlData += ` ORDER BY created ASC LIMIT ${offset}, ${limit}`;
+
+        let sqlCount = `SELECT COUNT(*) total FROM (${sqlData}) as totalQuery`;
+
+        const resultData = await query(sqlData);
+
+        const resultCount = await query(sqlCount);
+
+        return {
+            content: resultData,
+            total: resultCount[0]["total"]
+        };
+    }
 
     findOne = async (params) => {
         const { columnSet, values } = multipleColumnSet(params)
@@ -16,18 +34,26 @@ class TourDestinationModel {
         return result[0];
     }
 
-    create = async ({ tour_id, detail_text, tour_guide_text }) => {
-        const sql = `INSERT INTO ${this.tableName}
-        (tour_id, destination_id) VALUES (?,?)`;
+    create = async ({ name, is_show = 1}) => {
+        const sql = `INSERT INTO ${this.tableName} ( name, is_show) VALUES (?,?)`;
 
-        const result = await query(sql, [tour_id, detail_text, tour_guide_text]);
+        const result = await query(sql, [ name, is_show]);
         const affectedRows = result ? result.affectedRows : 0;
 
         return affectedRows;
     }
 
+    update = async (params, id) => {
+        const { columnSet, values } = multipleColumnSet(params)
+
+        const sql = `UPDATE ${this.tableName} SET ${columnSet} WHERE id = ?`;
+        const result = await query(sql, [...values, id]);
+
+        return result;
+    }
+
     delete = async (id) => {
-        const sql = `DELETE FROM ${this.tableName} WHERE tour_id = ?`;
+        const sql = `DELETE FROM ${this.tableName} WHERE id = ?`;
 
         const result = await query(sql, [id]);
         const affectedRows = result ? result.affectedRows : 0;
@@ -36,4 +62,4 @@ class TourDestinationModel {
     }
 }
 
-module.exports = new TourDestinationModel;
+module.exports = new DestinationModel;

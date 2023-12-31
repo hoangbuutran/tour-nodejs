@@ -96,7 +96,8 @@ class TourModel {
             tour.short_detail_text, 
             tour.price, 
             tour.star_review,
-            tour.duration_id,
+            tour.duration_id as duration_id,
+            duration.title as duration_title,
             tour.transportation,
             tour.is_populor,
             tour_detail.detail_text,
@@ -108,23 +109,24 @@ class TourModel {
         FROM ${this.tableName} AS tour 
         LEFT JOIN tour_detail AS tour_detail ON tour.id = tour_detail.tour_id
         LEFT JOIN tour_expected_cost AS tour_expected_cost ON tour.id = tour_expected_cost.tour_id
+        LEFT JOIN duration AS duration ON tour.duration_id = duration.id
 
         WHERE ${columnSet}`;
 
         const result = await query(sql, [...values]);
 
-        // return back the first row (user)
+        
         return result[0];
     }
 
-    create = async ({ thumnail_url, short_detail_text, price, sale_price, star_review, duration_id, transportation, is_populor = 0 }) => {
+    create = async ({day_start, title, thumnail_url, short_detail_text, price, sale_price, star_review, duration_id, transportation, is_populor = 0 }) => {
         const sql = `INSERT INTO ${this.tableName}
-        (thumnail_url, short_detail_text, price, sale_price, star_review, duration_id, transportation, is_populor) VALUES (?,?,?,?,?,?,?,?)`;
+        (day_start, title, thumnail_url, short_detail_text, price, sale_price, star_review, duration_id, transportation, is_populor) VALUES (?,?,?,?,?,?,?,?,?,?)`;
 
-        const result = await query(sql, [thumnail_url, short_detail_text, price, sale_price, star_review, duration_id, transportation, is_populor]);
+        const result = await query(sql, [day_start, title, thumnail_url, short_detail_text, price, sale_price, star_review, duration_id, transportation, is_populor]);
         const affectedRows = result ? result.affectedRows : 0;
 
-        return affectedRows;
+        return {affectedRows, result};
     }
 
     update = async (params, id) => {

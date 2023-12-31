@@ -11,6 +11,7 @@ const durationRouter = require('./routes/duration.route');
 const headerTopRouter = require('./routes/headerTop.route');
 const tourRouter = require('./routes/tour.route')
 const fileRouter = require('./routes/file.route')
+const destinationRouter = require('./routes/destination.route')
 
 
 // Swagger-UI
@@ -67,6 +68,7 @@ app.use(`/api/v1/durations`, durationRouter);
 app.use(`/api/v1/header-top`, headerTopRouter)
 app.use(`/api/v1/tours`, tourRouter)
 app.use(`/api/v1/files`, fileRouter)
+app.use(`/api/v1/destinations`, destinationRouter)
 
 
 // Swagger-UI

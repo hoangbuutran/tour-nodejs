@@ -39,12 +39,23 @@ class TourController {
     }
 
     getById = async (req, res, next) => {
-        const data = await TourModel.findOne({ id: req.params.id });
+        const data = await TourModel.findOne({ 'tour.id': req.params.id });
         if (!data) {
             throw new HttpException(404, 'Tour not found');
         }
 
-        res.send(new ResponseDetail(200, '', data));
+        let newObj = {
+            ...data,
+            "duration": {
+                "id": data.duration_id,
+                "title": data.duration_title
+            }
+        };
+
+        delete newObj.duration_id;
+        delete newObj.duration_title;
+
+        res.send(new ResponseDetail(200, 'OK', newObj));
     };
 
     create = async (req, res, next) => {
@@ -54,11 +65,12 @@ class TourController {
         const { tour_destination } = req.body;
 
         const result = await TourModel.create(req.body);
+        const tour_id = result.result.insertId;
 
         //save list tour_destination
         for (const element of tour_destination) {
             const bodyTourDestination = {
-                tour_id: result.id,
+                tour_id: tour_id,
                 destination_id: element
             }
             await tourDestinationModel.create(bodyTourDestination);
@@ -66,21 +78,20 @@ class TourController {
 
         // save tour_detail
         const bodyTourDetail = {
-            tour_id: result.id,
+            tour_id: tour_id,
             detail_text: req.body.detail_text,
             tour_guide_text: req.body.tour_guide_text
         };
-        const resultTourDetail = await tourDetailModel.create(bodyTourDetail);
+        await tourDetailModel.create(bodyTourDetail);
         // save tour_expected_cost
         const bodyTourExpectedCost = {
-            tour_id: result.id,
-            detail_text: req.body.detail_text,
+            tour_id: tour_id,
             rates_include_text: req.body.rates_include_text,
             price_not_included_text: req.body.price_not_included_text,
             surcharge_text: req.body.surcharge_text,
             cancel_change_text: req.body.cancel_change_text
         };
-        const resultTourExpectedCost = await tourExpectedCostModel.create(bodyTourExpectedCost);
+        await tourExpectedCostModel.create(bodyTourExpectedCost);
 
 
         if (!result) {
