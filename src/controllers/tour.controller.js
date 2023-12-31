@@ -33,7 +33,7 @@ class TourController {
     }
 
     getTourSearchs = async (req, res, next) => {
-        let data = await TourModel.getTourSearchs(req.query.duration_id, req.query.text, req.query.page, req.query.limit);
+        let data = await TourModel.getTourSearchs(req.query.duration_id, req.query.text, req.query.order, req.query.page, req.query.limit);
 
         res.send(new ResponseList(200, 'OK', data.content, data.total));
     }
@@ -101,9 +101,9 @@ class TourController {
 
         const result = await TourModel.update(restOfUpdates, req.params.id);
 
-         //save list tour_destination
-         await tourDestinationModel.delete(req.params.id);
-         for (const element of tour_destination) {
+        //save list tour_destination
+        await tourDestinationModel.delete(req.params.id);
+        for (const element of tour_destination) {
             const bodyTourDestination = {
                 tour_id: result.id,
                 destination_id: element

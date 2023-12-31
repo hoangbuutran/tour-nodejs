@@ -2,6 +2,7 @@ const query = require('../db/db-connection');
 const { multipleColumnSet, getOffset } = require('../utils/common.utils');
 const Role = require('../utils/userRoles.utils');
 class TourModel {
+    
     tableName = 'tour';
 
     find = async (params = {}) => {
@@ -36,7 +37,7 @@ class TourModel {
     getLastTours = async (page = 1, limit = 10) => {
         let offset = getOffset(page, limit);
         let sqlData = `SELECT * FROM ${this.tableName}`;
-        
+
         sqlData += ` ORDER BY created DESC LIMIT ${offset}, ${limit}`;
 
         let sqlCount = `SELECT COUNT(*) total FROM (${sqlData}) as totalQuery`;
@@ -52,7 +53,7 @@ class TourModel {
     }
 
 
-    getTourSearchs = async (duration_id, text, page = 1, limit = 10) => {
+    getTourSearchs = async (duration_id, text, order = 'DESC', page = 1, limit = 10) => {
         let offset = getOffset(page, limit);
         let sqlData = `SELECT * FROM ${this.tableName}`;
         // Mảng để lưu trữ các điều kiện của WHERE
@@ -71,7 +72,7 @@ class TourModel {
             sqlData += ` WHERE ${conditions.join(' AND ')}`;
         }
 
-        sqlData += ` ORDER BY created DESC LIMIT ${offset}, ${limit}`;
+        sqlData += ` ORDER BY created ${order} LIMIT ${offset}, ${limit}`;
 
         let sqlCount = `SELECT COUNT(*) total FROM (${sqlData}) as totalQuery`;
 
@@ -88,7 +89,26 @@ class TourModel {
     findOne = async (params) => {
         const { columnSet, values } = multipleColumnSet(params)
 
-        const sql = `SELECT * FROM ${this.tableName}
+        const sql = `SELECT 
+            tour.id, 
+            tour.title, 
+            tour.thumnail_url, 
+            tour.short_detail_text, 
+            tour.price, 
+            tour.star_review,
+            tour.duration_id,
+            tour.transportation,
+            tour.is_populor,
+            tour_detail.detail_text,
+            tour_detail.tour_guide_text, 
+            tour_expected_cost.rates_include_text,
+            tour_expected_cost.price_not_included_text,
+            tour_expected_cost.surcharge_text,
+            tour_expected_cost.cancel_change_text
+        FROM ${this.tableName} AS tour 
+        LEFT JOIN tour_detail AS tour_detail ON tour.id = tour_detail.tour_id
+        LEFT JOIN tour_expected_cost AS tour_expected_cost ON tour.id = tour_expected_cost.tour_id
+
         WHERE ${columnSet}`;
 
         const result = await query(sql, [...values]);

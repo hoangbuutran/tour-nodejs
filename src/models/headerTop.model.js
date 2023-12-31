@@ -2,6 +2,7 @@ const query = require('../db/db-connection');
 const { multipleColumnSet } = require('../utils/common.utils');
 
 class HeaderTopModel {
+    
     tableName = 'header_top';
 
     findOneNoParam = async (params = {}) => {

@@ -13,9 +13,9 @@ dotenv.config();
  ******************************************************************************/
 class DurationController {
     getAlls = async (req, res, next) => {
-        let userList = await DurationModel.find();
+        let data = await DurationModel.find(req.query.page, req.query.limit);
 
-        res.send(new ResponseList(200, '', userList, 199));
+        res.send(new ResponseList(200, 'OK', data.content, data.total));
     };
 
     getById = async (req, res, next) => {
@@ -24,7 +24,7 @@ class DurationController {
             throw new HttpException(404, 'Duration not found');
         }
 
-        res.send(new ResponseDetail(200, '', data));
+        res.send(new ResponseDetail(200, 'OK', data));
     };
 
     create = async (req, res, next) => {

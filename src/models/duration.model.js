@@ -1,21 +1,27 @@
 const query = require('../db/db-connection');
-const { multipleColumnSet } = require('../utils/common.utils');
+const { multipleColumnSet, getOffset } = require('../utils/common.utils');
 const Role = require('../utils/userRoles.utils');
+
 class DurationModel {
+    
     tableName = 'duration';
 
-    find = async (params = {}) => {
-        let sql = `SELECT * FROM ${this.tableName}`;
+    find = async (page = 1, limit = 10) => {
+        let offset = getOffset(page, limit);
+        let sqlData = `SELECT * FROM ${this.tableName} WHERE is_show = 1`;
 
-        if (!Object.keys(params).length) {
-            console.log('vao day');
-            return await query(sql);
-        }
+        sqlData += ` ORDER BY short ASC LIMIT ${offset}, ${limit}`;
 
-        const { columnSet, values } = multipleColumnSet(params)
-        sql += ` WHERE ${columnSet}`;
+        let sqlCount = `SELECT COUNT(*) total FROM (${sqlData}) as totalQuery`;
 
-        return await query(sql, [...values]);
+        const resultData = await query(sqlData);
+
+        const resultCount = await query(sqlCount);
+
+        return {
+            content: resultData,
+            total: resultCount[0]["total"]
+        };
     }
 
     findOne = async (params) => {
@@ -30,11 +36,11 @@ class DurationModel {
         return result[0];
     }
 
-    create = async ({ url_domain, title, short = 1 }) => {
+    create = async ({ url_domain, title, short = 1, is_show = 1 }) => {
         const sql = `INSERT INTO ${this.tableName}
-        (url_domain, title, short) VALUES (?,?,?)`;
+        (url_domain, title, short, is_show) VALUES (?,?,?,?)`;
 
-        const result = await query(sql, [url_domain, title, short]);
+        const result = await query(sql, [url_domain, title, short, is_show]);
         const affectedRows = result ? result.affectedRows : 0;
 
         return affectedRows;
@@ -44,7 +50,6 @@ class DurationModel {
         const { columnSet, values } = multipleColumnSet(params)
 
         const sql = `UPDATE ${this.tableName} SET ${columnSet} WHERE id = ?`;
-        console.log(sql);
         const result = await query(sql, [...values, id]);
 
         return result;
@@ -52,7 +57,7 @@ class DurationModel {
 
     delete = async (id) => {
         const sql = `DELETE FROM ${this.tableName} WHERE id = ?`;
-        
+
         const result = await query(sql, [id]);
         const affectedRows = result ? result.affectedRows : 0;
 
