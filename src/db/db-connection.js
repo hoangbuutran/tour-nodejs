@@ -4,12 +4,21 @@ const mysql2 = require('mysql2');
 
 class DBConnection {
     constructor() {
+
+        const host = process.env.DB_HOST || 'localhost';
+        const user = process.env.DB_USER || 'root';
+        const port = 3306;
+        const password = process.env.DB_PASS || 'password';
+        const database = process.env.DB_DATABASE || 'tour'
+
+        console.log(`host: ${host}, user: ${user}, port: ${port}, password: ${password}, database: ${database}`);
+        
         this.db = mysql2.createPool({
-            host: process.env.DB_HOST || 'localhost',
-            user: process.env.DB_USER || 'root',
-            port: 3306,
-            password: process.env.DB_PASS || 'password',
-            database: process.env.DB_DATABASE || 'tour'
+            host: host,
+            user: user,
+            port: port,
+            password: password,
+            database: database
         });
 
         this.checkConnection();
