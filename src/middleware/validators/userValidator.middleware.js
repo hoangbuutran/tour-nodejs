@@ -11,15 +11,11 @@ exports.createUserSchema = [
     body('first_name')
         .exists()
         .withMessage('Your first name is required')
-        .isAlpha()
-        .withMessage('Must be only alphabetical chars')
         .isLength({ min: 3 })
         .withMessage('Must be at least 3 chars long'),
     body('last_name')
         .exists()
         .withMessage('Your last name is required')
-        .isAlpha()
-        .withMessage('Must be only alphabetical chars')
         .isLength({ min: 3 })
         .withMessage('Must be at least 3 chars long'),
     body('email')

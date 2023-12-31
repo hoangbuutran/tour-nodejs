@@ -8,6 +8,7 @@ class DurationModel {
         let sql = `SELECT * FROM ${this.tableName}`;
 
         if (!Object.keys(params).length) {
+            console.log('vao day');
             return await query(sql);
         }
 
@@ -42,16 +43,16 @@ class DurationModel {
     update = async (params, id) => {
         const { columnSet, values } = multipleColumnSet(params)
 
-        const sql = `UPDATE user SET ${columnSet} WHERE id = ?`;
-
+        const sql = `UPDATE ${this.tableName} SET ${columnSet} WHERE id = ?`;
+        console.log(sql);
         const result = await query(sql, [...values, id]);
 
         return result;
     }
 
     delete = async (id) => {
-        const sql = `DELETE FROM ${this.tableName}
-        WHERE id = ?`;
+        const sql = `DELETE FROM ${this.tableName} WHERE id = ?`;
+        
         const result = await query(sql, [id]);
         const affectedRows = result ? result.affectedRows : 0;
 

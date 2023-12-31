@@ -66,3 +66,8 @@ npm run dev
    [express-validator]: <https://express-validator.github.io/docs/>
    [dotenv]: <https://github.com/motdotla/dotenv#readme>
    [cors]: <https://github.com/expressjs/cors#readme>
+
+# nginx api: https://khanh.website/2020/05/17/huong-dan-host-node-js-voi-pm2-nginx-va-kich-hoat-https-bang-certbot-tren-ubuntu/
+# nginx fe: https://stringee.com/vi/blog/post/trien-khai-ung-dung-reactjs-voi-nginx
+
+# Swagger-ui: https://dev.to/kabartolo/how-to-document-an-express-api-with-swagger-ui-and-jsdoc-50do

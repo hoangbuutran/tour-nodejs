@@ -13,6 +13,41 @@ class DBConnection {
         });
 
         this.checkConnection();
+
+        this.initHeaderTop();
+
+    }
+
+
+    initHeaderTop = async () => {
+        const tableName = 'header_top';
+
+        let sqlCheck = `SELECT * FROM ${tableName} LIMIT 1`;
+
+        const dataFind = await this.query(sqlCheck);
+
+        if (!dataFind) {
+            console.log("Header Top Has Inserted");
+        }
+        const dataInit = {
+            phone_number: null,
+            facebook_url: null,
+            x_url: null,
+            whatsap_url: null,
+            zalo_url: null
+        }
+
+        const sqlCreate = `INSERT INTO ${tableName} (phone_number, facebook_url, x_url , whatsap_url, zalo_url) VALUES (?,?,?,?,?)`;
+
+        const result = await this.query(
+            sqlCreate,
+            [
+                dataInit.phone_number,
+                dataInit.facebook_url,
+                dataInit.x_url,
+                dataInit.whatsap_url,
+                dataInit.zalo_url,
+            ]);
     }
 
     checkConnection() {
